@@ -1,10 +1,11 @@
-from flask import Blueprint
-from utils.APIRateLimit import RequiredRateLimiter
+from flask import Blueprint,jsonify,request
+from utils.APIRateLimiter import RequiredRateLimiter
 LoginBP=Blueprint("Login",__name__)
 
-@LoginBP.route("/")
-@RequiredRateLimiter(Filename=__name__)
-def Home():
+@LoginBP.route("/",methods=["POST"])
+@RequiredRateLimiter()
+def LoginPage():
+    return "HII,hello"
     
-    return "HIII"
+
 
