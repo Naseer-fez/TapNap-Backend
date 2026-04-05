@@ -4,9 +4,12 @@ from models.LinksTable import Links #Just so the table is  created early
 from dotenv import load_dotenv
 import os 
 from routes.LoginPage.Login import LoginBP
+from routes.CreateAccount.CreaAcc import CreatBp
+from flask_cors import CORS
 load_dotenv()
-app=Flask(__name__)
 
+app=Flask(__name__)
+#Data Base 
 DatbaseUserName=os.getenv("DatbaseUserName")
 DatabasePassword=os.getenv("DatabasePassword")
 DatabaseHost=os.getenv("DatabaseHost")
@@ -21,14 +24,22 @@ except Exception as e:
 
 app.secret_key=os.getenv("SECRETKEY")
 db.init_app(app)
-app.register_blueprint(LoginBP)
 try:
     with app.app_context():
             db.create_all()
 except Exception as e:
     print(e)
+    
+#All Endpionts Regestering
+app.register_blueprint(LoginBP)
+app.register_blueprint(CreatBp)
+
+# #Frontend
+FrontendURL=os.getenv("FrontendURL")
+# Cors=CORS(app,resources={r"/*":{"origins":FrontendURL}})
 
 if __name__=="__main__":
+    # app.run(debug=True,port=5000,host='0.0.0.0')
+    # app.run(debug=True,port=5001)
+    app.run(debug=True,port=5000)
 
-    app.run()
-    # print()
