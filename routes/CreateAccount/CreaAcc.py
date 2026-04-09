@@ -13,5 +13,9 @@ def CreationPage():
     Email=Data.get("email")
     info=CreateAccount(username=UserName,password=Password,email=Email)
     return jsonify(info[0]),info[1]
-    
+    # Tosend={
+    #         "Status":"Fail",
+    #         "Report":str("GO"),
+    #         "Userid":-1}
+    # return jsonify(Tosend), 200
 

@@ -3,7 +3,7 @@ import base64
 import uuid
 from models.LoginSql import db,User
 from sqlalchemy.exc import IntegrityError
-
+from utils.Logger import logs
 
 # class User(db.Model):
 #     __tablename__="User"
@@ -17,24 +17,19 @@ def CreateAccount(username,password,email):
     info=__TransferingDB(username=username,password=password,email=email)
     Tosend=dict()
     Statuscode=200
+    Tosend=dict()
+    Statuscode=200
     if info[0]==1:
         Tosend={
-            "Status":"Success",
-            "Report":"Go",
-            "Userid":info[1]
-            }
-        
-    elif info[0]==-1:
+            "Status":"success",
+            "Report":"go",
+            "Codeid":info[1]
+            }        
+    else :
         Tosend={
-            "Status":"Fail",
+            "Status":"fail",
             "Report":str(info[1]),
-            "Userid":-1}
-        Statuscode=400
-    elif info[0]==0:
-        Tosend={
-            "Status":"Fail",
-            "Report":str(info[1]),
-            "Userid":-1}
+            "Codeid":str(-1)}
         Statuscode=400
     return Tosend,Statuscode
 
@@ -47,18 +42,22 @@ def __TransferingDB(username,password,email):
             db.session.add(Data)
             db.session.commit()
         except IntegrityError:
+            
             db.session.rollback()
             return [-1,"The user Already Exist"]
         
         except Exception as e:
+            # print("HEre")
             db.session.rollback()
             ##Log this 
+            logs(message=e)
             return [0,e]
         Userid=Data.id
         return [1,Userid]
 
    
-
+def __Hashing(Password):
+    return hashlib.sha256(Password.encode()).hexdigest()
 
 
 if __name__=="__main__":
