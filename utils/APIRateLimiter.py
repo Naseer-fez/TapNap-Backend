@@ -248,6 +248,7 @@ def RequiredRateLimiter(Cleaning=False,
         # target_folder = FolderPath if FolderPath is not None else __FolderPath
         def Decorator(Func):
             def Wrapper(*args,**kwargs):
+                # return  Func(*args, **kwargs)  #if this is to complicated  FEZ
                 Ip=request.remote_addr
                 # Ip="12"
                 Filename=Func.__name__
@@ -258,7 +259,8 @@ def RequiredRateLimiter(Cleaning=False,
                 if CoolDown==1:
                     return Func(*args, **kwargs)
                 else:
-                    return f"Rate limit exceeded. Please wait {CoolDown} Secs.", 429    
+                    return f"Rate limit exceeded. Please wait {CoolDown} Secs.", 429 
+                
             return Wrapper
         return Decorator
 
