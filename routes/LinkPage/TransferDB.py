@@ -1,7 +1,7 @@
 from models.LinksTable import Links,db
 from sqlalchemy.exc import IntegrityError
 import time 
-
+import hashlib
     # ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     # UserId=db.Column(db.Integer, db.ForeignKey('User.id'),index=True, nullable=True,default=-1)
     # Link=db.Column(db.String(768),unique=True,nullable=False)
@@ -13,7 +13,7 @@ import time
 def Gateway(UserData:dict):
     UserData=__DataProcessing(UserData)
     info=__Todb(UserData=UserData)
-    print(UserData)
+    # print(UserData)
     Tosend=dict()
     Statuscode=200
     if info[0]==1:
@@ -21,20 +21,14 @@ def Gateway(UserData:dict):
             "Status":"success",
             "Report":"go",
             "Codeid":info[1]
-            }
-        
-    elif info[0]==-1:
+            }        
+    else :
         Tosend={
             "Status":"fail",
             "Report":str(info[1]),
-            "Codeid":-1}
+            "Codeid":str(-1)}
         Statuscode=400
-    elif info[0]==0:
-        Tosend={
-            "Status":"fail",
-            "Report":str(info[1]),
-            "Codeid":-1}
-        Statuscode=400
+
     return Tosend,Statuscode
 
 
@@ -42,11 +36,16 @@ def __DataProcessing(UserData:dict)->dict:
     tim=int(time.time())  
     UserData["Crttime"]=tim
     UserData["AldTime"]=tim+864001
-    if(UserData["Password"]==int(-1)):
-        UserData["Password"]=None
-    
+    if UserData["Password"] is not None:
+        UserData["Password"]=__Hashing(UserData["Password"])
+
     
     return UserData
+
+def __Hashing(Password):
+    return hashlib.sha256(Password.encode()).hexdigest()
+
+
 
 def __Todb(UserData:dict):
 
@@ -54,7 +53,7 @@ def __Todb(UserData:dict):
                Code=UserData["Code"],CreatedTime=UserData["Crttime"],AllowedTime=UserData["AldTime"])
     try:
         db.session.add(Data)
-        db.session.commit(Data)
+        db.session.commit()
     except IntegrityError:
             db.session.rollback()
             return [-1,"The Code Already Exist "]
