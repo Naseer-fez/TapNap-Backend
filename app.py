@@ -24,10 +24,10 @@ load_dotenv()
 def CreateApp():
     app=Flask(__name__)
     #Data Base 
-    DatbaseUserName=os.getenv("DatbaseUserName")
-    DatabasePassword=os.getenv("DatabasePassword")
-    DatabaseHost=os.getenv("DatabaseHost")
-    DatabaseName=os.getenv("DataBaseName")
+    # DatbaseUserName=os.getenv("DatbaseUserName")
+    # DatabasePassword=os.getenv("DatabasePassword")
+    # DatabaseHost=os.getenv("DatabaseHost")
+    # DatabaseName=os.getenv("DataBaseName")
 
     try:
         app.config['SQLALCHEMY_DATABASE_URI']=os.getenv("Database")
