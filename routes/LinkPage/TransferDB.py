@@ -38,6 +38,8 @@ def __DataProcessing(UserData:dict)->dict:
     UserData["AldTime"]=tim+864001
     if UserData["Password"] is not None:
         UserData["Password"]=__Hashing(UserData["Password"])
+    else:
+        UserData["Password"]=None
 
     
     return UserData
@@ -51,16 +53,33 @@ def __Todb(UserData:dict):
 
     Data=Links(UserId=UserData["Userid"],Link=UserData["Link"],Password=UserData["Password"],
                Code=UserData["Code"],CreatedTime=UserData["Crttime"],AllowedTime=UserData["AldTime"])
+    
     try:
         db.session.add(Data)
         db.session.commit()
     except IntegrityError:
             db.session.rollback()
-            return [-1,"The Code Already Exist "]
-        
+            CrtRecord=Links.query.filter_by(ID=Data.ID).first()
+            if CrtRecord:
+                if not Timecheck(Data,CrtRecord) :
+                    return [-1,"The Code Already Exist "]
+                CrtRecord.Link=Data.Link
+                CrtRecord.CreatedTime=Data.CreatedTime
+                CrtRecord.AllowedTime=Data.AllowedTime
+                
+                db.session.commit()
+            else:
+                return [-1 ,"Try another Code"]
     except Exception as e:
             db.session.rollback()
             ##Log this 
             return [0,e]
     Codeid=Data.ID
     return [1,Codeid]
+
+
+def Timecheck(Data,Rcrd):
+    if(Rcrd.AllowedTime<Data.CreatedTime):
+        return True
+    else:
+        return False

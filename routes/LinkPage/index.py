@@ -9,7 +9,7 @@ def Mainpage():
     if request.method=="POST":
         Client=request.get_json(force=True)
         Data=dict()
-        Data["Userid"]=Client.get("userid")
+        Data["Userid"]=Client.get("userid") or -1
         Data["Code"]=Client.get("code")
         Data["Link"]=Client.get("link")
         Data["Password"]=Client.get("password")

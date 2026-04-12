@@ -2,9 +2,8 @@ from models.LinksTable import Links,db
 import time
 from utils.Logger import logs
 
-
-def ClearingData():
-        from app import app
+def ClearingData(app):
+        
         while True:
             with   app.app_context():
                 
@@ -21,5 +20,4 @@ def ClearingData():
                     print(e)  
                     
                 finally:
-                    # print("TIme is up")
                     time.sleep(3600)

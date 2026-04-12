@@ -59,8 +59,9 @@ def __Timevaladation(Data):
         crttime=int(time.time())
 
         if Data.AllowedTime<crttime:
-            thread = threading.Thread(target=OldData,args=(Data,),daemon=True)
-            thread.start()
+            # thread = threading.Thread(target=OldData,args=(Data,),daemon=True)
+            # thread.start()
+            OldData(Data)
             return False
         else :
             # print("WOWOOW")

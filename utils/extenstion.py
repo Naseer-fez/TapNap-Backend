@@ -1,2 +1,1 @@
-from itsdangerous import URLSafeSerializer
-Serializer=URLSafeSerializer("Temp")
+from app import app
