@@ -37,7 +37,7 @@ def __email_sender(Message):
                 server.send_message(Message)
                 return 1
         except Exception as e:
-            logs()
+            logs(e)
             return str(e)
     
 
