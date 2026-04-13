@@ -27,3 +27,4 @@ test.py
 routes\Forgot
 routes\CreateAccount\Helper.py
 routes\LinkPage\TransferDB.py
+app.py
