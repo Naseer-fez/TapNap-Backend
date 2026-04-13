@@ -1,25 +1,30 @@
 import time 
-
-__Data={}
+from utils.DB.UpdateDb import EmailSearch
+Data={}
 def __inputval(email,otp):
-    global __Data
-    __Data[email]={"OTP":otp,"ALLOW":int(time.time())+(60*15)}
+    global Data
+    Data[email]={"OTP":otp,"ALLOW":int(time.time())+(60*15)}
     
     
 def __Validiator(email,otp):
+    global Data
     curnt=int(time.time())
     statuscode=400
-    if email not in __Data:
-        return ["No Record of that email",statuscode]
-    values= globals()['__Data'][email]
+    if email not in Data:
+        return [{"Report":"No Record of that email"},statuscode]
+    values= Data[email]
     if values["OTP"]!=otp:
-        return ["Wrong OTP",statuscode]
-    if values["ALLOW"]<curnt:
-        global __Data
-        del __Data[email]
-        return ["Time Exceded",statuscode]
+        return [{"Report":"Wrong OTP"},statuscode]
+    if values["ALLOW"]<curnt:     
+        del Data[email]
+        return [{"Report":"Time Exceded"},statuscode]
     statuscode=200
-    return "go",statuscode
+    #Now i need to check the db for the availablity of the users email
+    code=EmailSearch(email=email)
+    if  isinstance(code,str):
+        return [{"Report":f"Thier has been a error:{code}"},statuscode]
+    return [{"Report":"go",
+             "Codeid":code},statuscode]
 
 
 def STORAGE(email,otp,action="Create"):
