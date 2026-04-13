@@ -11,7 +11,8 @@ from routes.LinkPage.index import MainPg
 from routes.LinkPage.Codepage import Codepg
 from routes.LoginPage.Login import LoginBP
 from routes.CreateAccount.CreaAcc import CreatBp
-# from routes.Forgot.Email import FrgEmail
+from routes.Forgot.Email import FrgEmail
+from routes.Verfiy.ChnagePwd import Chnagepass
 from flask_cors import CORS
 from utils.Logger import logs
 load_dotenv()
@@ -24,10 +25,10 @@ load_dotenv()
 def CreateApp():
     app=Flask(__name__)
     #Data Base 
-    # DatbaseUserName=os.getenv("DatbaseUserName")
-    # DatabasePassword=os.getenv("DatabasePassword")
-    # DatabaseHost=os.getenv("DatabaseHost")
-    # DatabaseName=os.getenv("DataBaseName")
+    DatbaseUserName=os.getenv("DatbaseUserName")
+    DatabasePassword=os.getenv("DatabasePassword")
+    DatabaseHost=os.getenv("DatabaseHost")
+    DatabaseName=os.getenv("DataBaseName")
 
     try:
         app.config['SQLALCHEMY_DATABASE_URI']=os.getenv("Database")
@@ -59,7 +60,8 @@ def CreateApp():
     app.register_blueprint(CreatBp)
     app.register_blueprint(MainPg)
     app.register_blueprint(Codepg)
-    # app.register_blueprint(FrgEmail)
+    app.register_blueprint(FrgEmail)
+    app.register_blueprint(Chnagepass)
     # #Frontend
     FrontendURL=os.getenv("FrontendURL")
     Cors=CORS(app,resources={r"/*":{"origins":FrontendURL}})
@@ -79,4 +81,3 @@ if __name__=="__main__":
     #     cleaningdb.start()
     #     pass
     app.run(debug=True,port=500)
-
