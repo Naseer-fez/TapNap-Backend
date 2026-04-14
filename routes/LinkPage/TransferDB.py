@@ -9,7 +9,7 @@ import hashlib
     # Code=db.Column(db.Integer,unique=True,nullable=False)
     # CreatedTime= db.Column(db.BigInteger, default=lambda: int(time.time()),nullable=False)
     # AllowedTime=db.Column(db.BigInteger, default=lambda: int(time.time())+864001,nullable=False)
-
+import os
 def Gateway(UserData:dict):
     UserData=__DataProcessing(UserData)
     info=__Todb(UserData=UserData)
@@ -35,7 +35,7 @@ def Gateway(UserData:dict):
 def __DataProcessing(UserData:dict)->dict:
     tim=int(time.time())  
     UserData["Crttime"]=tim
-    UserData["AldTime"]=tim+864001
+    UserData["AldTime"]=tim+(86401*int(os.getenv("Time",1)))
     if UserData["Password"] is not None:
         UserData["Password"]=__Hashing(UserData["Password"])
     else:
