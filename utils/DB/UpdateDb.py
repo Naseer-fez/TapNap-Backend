@@ -27,7 +27,7 @@ def EmailSearch(email):
 
 
 def updateinfo(id,item):
-    Data=User.query.filter_by(Id=id).first()
+    Data=User.query.filter_by(id=id).first()
     if Data is None:
         return "User not Found"
     Data.item=item
