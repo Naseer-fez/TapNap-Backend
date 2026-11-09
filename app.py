@@ -30,14 +30,16 @@ def CreateApp():
     # DatabaseHost=os.getenv("DatabaseHost")
     # DatabaseName=os.getenv("DataBaseName")
 
-    try:
-        app.config['SQLALCHEMY_DATABASE_URI']=os.getenv("Database")
-        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-        # app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{DatbaseUserName}:{DatabasePassword}@{DatabaseHost}/{DatabaseName}"
-        #  app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://root:{Database}@localhost/tapnap"
-    except Exception as e:
-        print(e)
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db' ##Trace back Database
+    db_url = os.getenv("Database") or os.getenv("POSTGRES_URL") or os.getenv("DATABASE_URL")
+    if db_url:
+        db_url = db_url.strip().strip("'\"")
+        if db_url.startswith("postgres://"):
+            db_url = db_url.replace("postgres://", "postgresql://", 1)
+        app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+    else:
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
     Key=os.getenv("SECRETKEY")
     app.secret_key=Key
     db.init_app(app)
