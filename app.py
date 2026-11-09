@@ -5,6 +5,7 @@ from utils.DB.CleaningDb import ClearingData
 # from utils.extenstion import Serializer
 from dotenv import load_dotenv
 import os 
+import re
 import threading
 # from utils.DB.CleaningDb 
 from routes.LinkPage.index import MainPg
@@ -32,7 +33,11 @@ def CreateApp():
 
     db_url = os.getenv("Database") or os.getenv("POSTGRES_URL") or os.getenv("DATABASE_URL")
     if db_url:
-        db_url = db_url.strip().strip("'\"")
+        match = re.search(r'([a-zA-Z][a-zA-Z0-9+_-]*://[^\s,"\'<>]+)', db_url)
+        if match:
+            db_url = match.group(1)
+        else:
+            db_url = db_url.strip().strip("'\"")
         if db_url.startswith("postgres://"):
             db_url = db_url.replace("postgres://", "postgresql://", 1)
         app.config['SQLALCHEMY_DATABASE_URI'] = db_url
